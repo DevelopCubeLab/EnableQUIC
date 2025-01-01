@@ -1,0 +1,8 @@
+Package: com.developlab.enablequic
+Name: EnableQUIC
+Version: 1.0
+Architecture: iphoneos-arm
+Description: iOS Tweak enable QUIC
+Maintainer: developlab
+Author: developlab
+Section: Utilities
