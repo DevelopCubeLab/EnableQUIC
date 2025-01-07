@@ -228,15 +228,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 ) { _ in
                     // 按钮回调处理
                     if FileUtils.enableQUIC(statusItems: self.statusItems) {
-                        // 刷新数据和列表
-                        self.loadConfigData()
-                        tableView.reloadData()
-                        
                         self.showAlertDialog(messags: String.localizedStringWithFormat(NSLocalizedString("Enable_QUIC_Successful_text", comment: ""), FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path.appending("/backups/") ?? NSLocalizedString("Unknown_text", comment: "")), showRespringButton: true)
                         
                     } else {
                         self.showAlertDialog(messags: NSLocalizedString("Enable_QUIC_Failed_text", comment: ""), showRespringButton: false)
                     }
+                    // 刷新数据和列表
+                    self.loadConfigData()
+                    tableView.reloadData()
                 }
                 alert.addAction(confirmButton)
                 // 添加取消按钮

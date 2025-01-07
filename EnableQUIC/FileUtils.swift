@@ -67,7 +67,10 @@ class FileUtils {
     
     static func setLockProfileAttributes() -> Bool {
         let deviceController = DeviceController()
-        return deviceController.setFileAttributes("/var/preferences/com.apple.networkd.plist", permissions: 0o444, owner: "root", group: "wheel")
+        if !deviceController.setFileAttributes("/var/preferences/com.apple.networkd.plist", permissions: 0o444, owner: "root", group: "wheel") {
+            return setOwnerAndPermissions(forFile: "/var/preferences/com.apple.networkd.plist", permissions: 0o444)
+        }
+        return true
     }
     
     private static func editQUICProfile(statusItems: [(String, Bool)], defaultConfigItems: [(String, Bool)]? = nil) -> Bool {
@@ -106,7 +109,7 @@ class FileUtils {
                 let success = deviceController.setFileAttributes(backupFilePath.path, permissions: 0o644, owner: "root", group: "wheel")
                 if !success {
                     NSLog("Failed to set file attributes for backup.")
-                    return false
+                    setOwnerAndPermissions(forFile: backupFilePath.path, permissions: 0o644)
                 }
             }
 
@@ -137,8 +140,7 @@ class FileUtils {
                 let deviceController = DeviceController()
                 let success = deviceController.setFileAttributes(originalFilePath, permissions: 0o644, owner: "root", group: "wheel")
                 if !success {
-                    NSLog("Failed to set file attributes for original file.")
-                    return false
+                    return setOwnerAndPermissions(forFile: originalFilePath, permissions: 0o644)
                 }
                 NSLog("QUIC configuration updated successfully.")
                 return true
@@ -150,6 +152,33 @@ class FileUtils {
             NSLog("Error: \(error)")
             return false
         }
+    }
+    
+    @discardableResult
+    static func setOwnerAndPermissions(forFile filePath: String, permissions: mode_t) -> Bool {
+        guard !filePath.isEmpty else {
+            print("File path is nil or empty.")
+            return false
+        }
+
+        let fileSystemPath = (filePath as NSString).fileSystemRepresentation
+        
+        guard let rootUser = getpwnam("root"), let wheelGroup = getgrnam("wheel") else {
+            print("Failed to get root user or wheel group.")
+            return false
+        }
+
+        if chown(fileSystemPath, rootUser.pointee.pw_uid, wheelGroup.pointee.gr_gid) != 0 {
+            perror("Failed to change file owner and group")
+            return false
+        }
+
+        if chmod(fileSystemPath, permissions) != 0 {
+            perror("Failed to change file permissions")
+            return false
+        }
+
+        return true
     }
 
 

@@ -29,7 +29,7 @@
 "Lock_QUIC_Config_Successful_text" = "File permissions locked successfully";
 "Lock_QUIC_Config_Failed_text" = "Failed to lock file permissions";
 "How_It_Works_text" = "How It Works";
-"Works_Principle_text" = "Based on the content from 'https://www.feng.com/post/13873305', this app modifies the parameters in '/var/preferences/com.apple.networkd.plist'.\nHowever, I cannot guarantee the effectiveness or lack of side effects after enabling QUIC. You are advised to understand how it works yourself. We are not responsible for any impact on your device.";
+"Works_Principle_text" = "Based on the content from 'https://www.feng.com/post/13873305'(Chinese), this app modifies the parameters in '/var/preferences/com.apple.networkd.plist'.\nHowever, I cannot guarantee the effectiveness or lack of side effects after enabling QUIC. You are advised to understand how it works yourself. We are not responsible for any impact on your device.";
 "Not_Supported_text" = "Oops, the configuration file was not retrieved. Your system might not support QUIC, so we cannot proceed.";
 "Warning_message" = "The impact of enabling QUIC on the system cannot be determined. Please understand how QUIC works on your own.";
 
