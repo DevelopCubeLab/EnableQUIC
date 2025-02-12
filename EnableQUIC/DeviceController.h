@@ -10,3 +10,5 @@
                    group:(NSString *)group;
 
 @end
+
+int spawnRoot(NSString* path, NSArray* args, NSString** stdOut, NSString** stdErr);

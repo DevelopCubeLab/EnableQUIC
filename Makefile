@@ -17,11 +17,13 @@ before-package::
 	fi
 	@echo -e "\033[32mRemoving _CodeSignature folder..."
 	@rm -rf $(THEOS_STAGING_DIR)/Applications/$(XCODEPROJ_NAME).app/_CodeSignature
-
+	@echo -e "\033[32mCopy RootHelper to package..."
+	@cp -f FileAttributesHelper/FileAttributesHelper $(THEOS_STAGING_DIR)/Applications/$(XCODEPROJ_NAME).app/
+		
 # 包装完成后重命名为 .tipa
 after-package::
 	@echo -e "\033[32mRenaming .ipa to .tipa...\033[0m"
-	@mv ./packages/com.developlab.enablequic_1.0.ipa ./packages/com.developlab.enablequic_1.0.tipa || @echo -e "\033[31mNo .ipa file found.\033[0m"
+	@mv ./packages/com.developlab.enablequic_1.1.ipa ./packages/com.developlab.enablequic_1.1.tipa || @echo -e "\033[31mNo .ipa file found.\033[0m"
 	@echo -e "\033[1;32m\n** Build Succeeded **\n\033[0m"
 #SUBPROJECTS += FileAttributesHelper
 #include $(THEOS_MAKE_PATH)/aggregate.mk
