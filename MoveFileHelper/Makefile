@@ -2,7 +2,7 @@ TARGET := iphone:clang:latest:7.0
 
 include $(THEOS)/makefiles/common.mk
 
-TOOL_NAME = FileAttributesHelper
+TOOL_NAME = MoveFileHelper
 
 $(TOOL_NAME)_FILES = main.m
 $(TOOL_NAME)_CFLAGS = -fobjc-arc
@@ -15,3 +15,4 @@ after-stage::
 	@echo "Copying file to parent directory..."
 	cp $(THEOS_STAGING_DIR)/usr/local/bin/$(TOOL_NAME) ../$(TOOL_NAME)/
 	@echo "Copy completed."
+

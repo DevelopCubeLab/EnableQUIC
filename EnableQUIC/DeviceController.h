@@ -9,6 +9,8 @@
                    owner:(NSString *)owner
                    group:(NSString *)group;
 
+- (BOOL)moveFileFromPath:(NSString *)fromPath toPath:(NSString *)toPath;
+
 @end
 
 int spawnRoot(NSString* path, NSArray* args, NSString** stdOut, NSString** stdErr);

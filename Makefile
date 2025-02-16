@@ -7,6 +7,10 @@ XCODEPROJ_NAME = EnableQUIC
 
 include $(THEOS_MAKE_PATH)/xcodeproj.mk
 
+SUBPROJECTS += FileAttributesHelper
+SUBPROJECTS += MoveFileHelper
+include $(THEOS_MAKE_PATH)/aggregate.mk
+
 # 在打包阶段用ldid签名赋予权力，顺便删除_CodeSignature
 before-package::
 	@if [ -f $(THEOS_STAGING_DIR)/Applications/$(XCODEPROJ_NAME).app/Info.plist ]; then \
@@ -19,11 +23,11 @@ before-package::
 	@rm -rf $(THEOS_STAGING_DIR)/Applications/$(XCODEPROJ_NAME).app/_CodeSignature
 	@echo -e "\033[32mCopy RootHelper to package..."
 	@cp -f FileAttributesHelper/FileAttributesHelper $(THEOS_STAGING_DIR)/Applications/$(XCODEPROJ_NAME).app/
+		@cp -f MoveFileHelper/MoveFileHelper $(THEOS_STAGING_DIR)/Applications/$(XCODEPROJ_NAME).app/
 		
 # 包装完成后重命名为 .tipa
 after-package::
 	@echo -e "\033[32mRenaming .ipa to .tipa...\033[0m"
-	@mv ./packages/com.developlab.enablequic_1.1.ipa ./packages/com.developlab.enablequic_1.1.tipa || @echo -e "\033[31mNo .ipa file found.\033[0m"
+	@mv ./packages/com.developlab.enablequic_1.2.ipa ./packages/com.developlab.enablequic_1.2.tipa || @echo -e "\033[31mNo .ipa file found.\033[0m"
 	@echo -e "\033[1;32m\n** Build Succeeded **\n\033[0m"
-#SUBPROJECTS += FileAttributesHelper
-#include $(THEOS_MAKE_PATH)/aggregate.mk
+

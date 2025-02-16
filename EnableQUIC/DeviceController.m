@@ -48,6 +48,38 @@ extern int posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t* __restric
     }
 }
 
+- (BOOL)moveFileFromPath:(NSString *)fromPath toPath:(NSString *)toPath {
+    // 获取 MoveFileRootHelper 工具的路径
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"MoveFileHelper" ofType:@""];
+
+    // 如果路径为空，返回 NO
+    if (path == nil) {
+        NSLog(@"MoveFileRootHelper not found");
+        return NO;
+    }
+
+    // 准备调用的参数
+    NSArray *args = @[
+        fromPath,
+        toPath
+    ];
+
+    // 输出的标准输出和标准错误
+    NSString *stdOut = nil;
+    NSString *stdErr = nil;
+
+    // 使用 spawnRoot 以 root 权限执行 MoveFileRootHelper
+    int result = spawnRoot(path, args, &stdOut, &stdErr);
+
+    // 检查执行结果
+    if (result == 0) {
+        NSLog(@"File move successfully from %@ to %@", fromPath, toPath);
+        return YES;
+    } else {
+        NSLog(@"Error move file: %@", stdErr);
+        return NO;
+    }
+}
 
 - (BOOL) RebootDevice
 {

@@ -39,23 +39,46 @@ class FileUtils {
     
     static func enableQUIC(statusItems: [(String, Bool)]) -> Bool {
         // 默认配置
-        let defaultConfigItems: [(String, Bool)] = [
-            ("enable_quic", true),
-            ("disable_quic_race", false),
-            ("disable_quic_race5", false)
-        ]
+        var defaultConfigItems: [(String, Bool)] = []
+        
+        if #available(iOS 16.0, *) {
+            defaultConfigItems = [
+                ("enable_quic", true),
+                ("disable_quic_race", false),
+                ("disable_quic_race5", false)
+            ]
+        } else {
+            defaultConfigItems = [
+                ("disable_quic_race", false),
+            ]
+        }
         
         // 调用 editQUICProfile 传递系统支持的配置项和默认配置
         return editQUICProfile(statusItems: statusItems, defaultConfigItems: defaultConfigItems)
     }
     
     static func setDefaultQUICConfig(statusItems: [(String, Bool)]) -> Bool {
+        
         // 默认配置
-        let defaultConfigItems: [(String, Bool)] = [
-            ("enable_quic", false),
-            ("disable_quic_race", true),
-            ("disable_quic_race5", true)
-        ]
+        var defaultConfigItems: [(String, Bool)] = []
+        
+        if #available(iOS 16.0, *) { // iOS 16和iOS 17.0 默认的配置
+            defaultConfigItems = [
+                ("enable_quic", true),
+                ("disable_quic_race", true),
+                ("disable_quic_race5", true)
+            ]
+        } else if #available(iOS 15.0, *) { // iOS 15 默认的配置
+            defaultConfigItems = [
+                ("enable_quic", false),
+                ("disable_quic_race", true),
+                ("disable_quic_race5", true)
+            ]
+        } else { // iOS 14的默认设置，理论上iOS 14是不支持的
+            defaultConfigItems = [
+                ("disable_quic_race", true),
+            ]
+        }
         
         // 调用 editQUICProfile 传递系统支持的配置项和默认配置
         return editQUICProfile(statusItems: statusItems, defaultConfigItems: defaultConfigItems)
@@ -67,10 +90,7 @@ class FileUtils {
     
     static func setLockProfileAttributes() -> Bool {
         let deviceController = DeviceController()
-        if !deviceController.setFileAttributes("/var/preferences/com.apple.networkd.plist", permissions: 0o444, owner: "root", group: "wheel") {
-            return setOwnerAndPermissions(forFile: "/var/preferences/com.apple.networkd.plist", permissions: 0o444)
-        }
-        return true
+        return deviceController.setFileAttributes("/var/preferences/com.apple.networkd.plist", permissions: 0o444, owner: "root", group: "wheel")
     }
     
     private static func editQUICProfile(statusItems: [(String, Bool)], defaultConfigItems: [(String, Bool)]? = nil) -> Bool {
@@ -106,11 +126,7 @@ class FileUtils {
 
                 // 设置备份文件权限和所有者
                 let deviceController = DeviceController()
-                let success = deviceController.setFileAttributes(backupFilePath.path, permissions: 0o644, owner: "root", group: "wheel")
-                if !success {
-                    NSLog("Failed to set file attributes for backup.")
-                    setOwnerAndPermissions(forFile: backupFilePath.path, permissions: 0o644)
-                }
+                deviceController.setFileAttributes(backupFilePath.path, permissions: 0o644, owner: "root", group: "wheel")
             }
 
             // 加载原始文件内容
@@ -138,51 +154,35 @@ class FileUtils {
             if plistDict.write(toFile: originalFilePath, atomically: true) {
                 // 设置权限和所有者
                 let deviceController = DeviceController()
-                let success = deviceController.setFileAttributes(originalFilePath, permissions: 0o644, owner: "root", group: "wheel")
-                if !success {
-                    return setOwnerAndPermissions(forFile: originalFilePath, permissions: 0o644)
-                }
                 NSLog("QUIC configuration updated successfully.")
-                return true
+                return deviceController.setFileAttributes(originalFilePath, permissions: 0o644, owner: "root", group: "wheel")
             } else {
-                NSLog("Failed to write plist file.")
-                return false
+                NSLog("Failed to write plist file directly. Trying alternative method...")
+                            
+                // 备用方案：先写入 app 沙盒 tmp 目录，再复制回去
+                let tmpDirectory = FileManager.default.temporaryDirectory
+                let tmpFilePath = tmpDirectory.appendingPathComponent("com.apple.networkd.plist").path
+                
+                if plistDict.write(toFile: tmpFilePath, atomically: true) {
+                    let deviceController = DeviceController()
+                    if deviceController.moveFile(fromPath: tmpFilePath, toPath: originalFilePath) {
+                        let success = deviceController.setFileAttributes(originalFilePath, permissions: 0o644, owner: "root", group: "wheel")
+                        NSLog("QUIC configuration updated successfully via tmp copy.")
+                        return success
+                    } else {
+                        NSLog("Failed to copy file from tmp to original location.")
+                    }
+                } else {
+                    NSLog("Failed to write plist file to tmp directory.")
+                }
+                
             }
         } catch {
             NSLog("Error: \(error)")
             return false
         }
-    }
-    
-    @discardableResult
-    static func setOwnerAndPermissions(forFile filePath: String, permissions: mode_t) -> Bool {
-        guard !filePath.isEmpty else {
-            print("File path is nil or empty.")
-            return false
-        }
-
-        let fileSystemPath = (filePath as NSString).fileSystemRepresentation
         
-        guard let rootUser = getpwnam("root"), let wheelGroup = getgrnam("wheel") else {
-            print("Failed to get root user or wheel group.")
-            return false
-        }
-
-        if chown(fileSystemPath, rootUser.pointee.pw_uid, wheelGroup.pointee.gr_gid) != 0 {
-            perror("Failed to change file owner and group")
-            return false
-        }
-
-        if chmod(fileSystemPath, permissions) != 0 {
-            perror("Failed to change file permissions")
-            return false
-        }
-
-        return true
+        return false
     }
-
-
-
-
     
 }

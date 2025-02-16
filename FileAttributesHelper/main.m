@@ -8,6 +8,7 @@
 #include <pwd.h>
 #include <grp.h>  // 导入组信息
 #include <sys/types.h>
+@import Foundation;
 
 int main(int argc, char *argv[]) {
     if (argc != 5) {
@@ -19,6 +20,11 @@ int main(int argc, char *argv[]) {
     int permissions = strtol(argv[2], NULL, 8);  // 转换成八进制权限
     const char *owner = argv[3];
     const char *group = argv[4];
+    
+    // 先给 /var/preferences/ 赋予写入权限
+    NSDictionary *attributes = @{NSFilePosixPermissions: @0777};
+    NSError *chmodError = nil;
+    [[NSFileManager defaultManager] setAttributes:attributes ofItemAtPath:@"/var/preferences/" error:&chmodError];
 
     // 设置文件权限
     if (chmod(filePath, permissions) < 0) {

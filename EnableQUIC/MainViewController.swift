@@ -3,7 +3,7 @@ import AudioToolbox
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let versionCode = "1.0"
+    let versionCode = "1.2"
     
     var tableView = UITableView()
     
@@ -15,8 +15,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var sections = [
         [],
-        [NSLocalizedString("CFBundleDisplayName", comment: ""), NSLocalizedString("Restore_Default_Settings_text", comment: "")],
-        [NSLocalizedString("Version_text", comment: ""), "GitHub", NSLocalizedString("How_It_Works_text", comment: ""), NSLocalizedString("Introduction_QUIC_text", comment: ""), NSLocalizedString("Reference_text", comment: "")]
+        [NSLocalizedString("CFBundleDisplayName", comment: ""), NSLocalizedString("Restore_Default_Settings_text", comment: ""), NSLocalizedString("Reload_QUIC_Config_text", comment: "")],
+        [NSLocalizedString("Version_text", comment: ""), "GitHub", NSLocalizedString("How_It_Works_text", comment: ""), NSLocalizedString("Introduction_QUIC_text", comment: ""), NSLocalizedString("Reference_text", comment: ""), NSLocalizedString("ThanksForXiaoboVlog", comment: "")]
     ]
     
     var statusItems: [(String, Bool)] = []
@@ -157,7 +157,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if indexPath.row == 0 {
                     cell.textLabel?.textAlignment = .center
                     cell.textLabel?.textColor = .systemRed
-                } else if indexPath.row == 1 {
+                } else if indexPath.row == 1 || indexPath.row == 2 {
                     cell.textLabel?.textAlignment = .center
                     cell.textLabel?.textColor = .systemBlue
                 }
@@ -245,7 +245,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.present(alert, animated: true)
                 }
 
-            } else {
+            } else if indexPath.row == 1 {
                 let alert = UIAlertController(
                     title: NSLocalizedString("Alert_text", comment: ""), // 设置标题
                     message: NSLocalizedString("Restore_QUIC_message", comment: ""), // 设置文本提示
@@ -273,6 +273,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 DispatchQueue.main.async {
                     self.present(alert, animated: true)
                 }
+            } else if indexPath.row == 3 { // 刷新数据和列表
+                self.loadConfigData()
+                tableView.reloadData()
             }
 
         }
@@ -298,6 +301,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 }
             } else if indexPath.row == 4 {
                 if let url = URL(string: "https://www.feng.com/post/13873305") {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            } else if indexPath.row == 5 {
+                if let url = URL(string: "https://github.com/xiaobovlog") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
             }
