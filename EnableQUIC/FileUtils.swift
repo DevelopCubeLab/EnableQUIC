@@ -88,9 +88,24 @@ class FileUtils {
         return editQUICProfile(statusItems: statusItems, defaultConfigItems: nil)
     }
     
-    static func setLockProfileAttributes() -> Bool {
+    static func setLockProfileAttributes(lock: Bool) -> Bool {
         let deviceController = DeviceController()
-        return deviceController.setFileAttributes("/var/preferences/com.apple.networkd.plist", permissions: 0o444, owner: "root", group: "wheel")
+        return deviceController.setFileLock(lock)
+//        return deviceController.setFileAttributes("/var/preferences/com.apple.networkd.plist", permissions: 0o444, owner: "root", group: "wheel")
+    }
+    
+    /// 获取文件是否被锁定
+    static func isFileLocked() -> Bool {
+        var fileStat = stat()
+        
+        // 调用 stat() 获取文件信息
+        if stat("/var/preferences/com.apple.networkd.plist", &fileStat) == 0 {
+            // 判断文件是否具有 UF_IMMUTABLE (uchg) 标志
+            return (fileStat.st_flags & UInt32(UF_IMMUTABLE)) != 0
+        } else {
+            print("Failed to get file attributes")
+            return false
+        }
     }
     
     private static func editQUICProfile(statusItems: [(String, Bool)], defaultConfigItems: [(String, Bool)]? = nil) -> Bool {

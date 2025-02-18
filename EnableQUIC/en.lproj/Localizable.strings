@@ -10,6 +10,7 @@
 "Reference_text" = "Reference(Chinese)";
 "Save_text" = "Save";
 "Lock_Permissions_text" = "Lock File Permissions";
+"Unlock_Permissions_text" = "Unlock File Permissions";
 "Hide_Advanced_Settings_text" = "Hide Advanced Settings";
 "Alert_text" = "Alert";
 "Need_Install_With_TrollStore_text" = "Root permission required. Please install using TrollStore. Alternatively, your developer certificate must have the 'com.apple.private.security.no-sandbox' entitlement.\n(This is almost impossible, so stop asking why certificate-signed installation is not supported.)";
@@ -24,10 +25,14 @@
 "Save_Config_Failed_text" = "Failed to save settings";
 "Respiring_text" = "Respring";
 "Enable_QUIC_message" = "Do you want to enable QUIC?\nThe effects and potential side effects cannot be guaranteed.";
+"File_Locked_message" = "The file is locked, please unlock the file write permission in advanced settings first.";
 "Restore_QUIC_message" = "Do you want to restore the system's default QUIC settings?";
-"Lock_QUIC_Config_message" = "Do you want to lock the configuration file's write permissions?\n(Untested. Proceed with caution!)";
+"Lock_QUIC_Config_message" = "Do you want to lock the configuration file's write permissions?\n(Untested. Proceed with caution! Please unlock file permissions before uninstalling the app if it is locked.)";
+"Unlock_QUIC_Config_message" = "Do you want to unlock the configuration file's write permissions?";
 "Lock_QUIC_Config_Successful_text" = "File permissions locked successfully";
+"Unlock_QUIC_Config_Successful_text" = "File permissions unlocked successfully";
 "Lock_QUIC_Config_Failed_text" = "Failed to lock file permissions";
+"Unlock_QUIC_Config_Failed_text" = "Failed to unlock file permissions";
 "How_It_Works_text" = "How It Works";
 "Works_Principle_text" = "Based on the content from 'https://www.feng.com/post/13873305'(Chinese), this app modifies the parameters in '/var/preferences/com.apple.networkd.plist'.\nHowever, I cannot guarantee the effectiveness or lack of side effects after enabling QUIC. You are advised to understand how it works yourself. We are not responsible for any impact on your device.";
 "Not_Supported_text" = "Oops, the configuration file was not retrieved. Your system might not support QUIC, so we cannot proceed.";

@@ -81,6 +81,27 @@ extern int posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t* __restric
     }
 }
 
+- (BOOL)setFileLock:(BOOL)lock {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"AdvancedHelper" ofType:@""];
+    if (!path) {
+        NSLog(@"RootHelper not found");
+        return NO;
+    }
+
+    NSArray *args = lock ? @[@"lock"] : @[@"unlock"];
+    NSString *stdOut = nil;
+    NSString *stdErr = nil;
+    int result = spawnRoot(path, args, &stdOut, &stdErr);
+
+    if (result == 0) {
+        NSLog(@"File %@ successfully", lock ? @"locked" : @"unlocked");
+        return YES;
+    } else {
+        NSLog(@"Error %@ file: %@", lock ? @"locking" : @"unlocking", stdErr);
+        return NO;
+    }
+}
+
 - (BOOL) RebootDevice
 {
 	NSString *path = [[NSBundle mainBundle] pathForResource:@"RebootRootHelper" ofType:@""];

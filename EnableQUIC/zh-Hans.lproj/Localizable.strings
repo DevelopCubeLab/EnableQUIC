@@ -10,6 +10,7 @@
 "Reference_text" = "参考";
 "Save_text" = "保存";
 "Lock_Permissions_text" = "锁定文件权限";
+"Unlock_Permissions_text" = "解锁文件权限";
 "Hide_Advanced_Settings_text" = "隐藏高级设置";
 "Alert_text" = "提示";
 "Need_Install_With_TrollStore_text" = "需要Root权限，请使用TrollStore安装。或者您的开发者证书能有'com.apple.private.security.no-sandbox'权限\n(几乎是做不到的，所以不要再问为什么不支持证书签名安装了)";
@@ -24,10 +25,14 @@
 "Save_Config_Failed_text" = "保存设置失败";
 "Respiring_text" = "注销";
 "Enable_QUIC_message" = "是否开启QUIC？\n无法保证开启后的效果和是否有副作用";
+"File_Locked_message" = "文件被锁定，请先在高级设置中解锁文件写入权限";
 "Restore_QUIC_message" = "是否恢复系统默认QUIC设置？";
-"Lock_QUIC_Config_message" = "是否锁定配置文件写入权限？\n（未经测试，请谨慎操作！）";
+"Lock_QUIC_Config_message" = "是否锁定配置文件写入权限？\n（未经测试，请谨慎操作！锁定后如果卸载App之前请先解锁文件权限）";
+"Unlock_QUIC_Config_message" = "是否解锁配置文件写入权限？";
 "Lock_QUIC_Config_Successful_text" = "锁定文件权限成功";
+"Unlock_QUIC_Config_Successful_text" = "解锁文件权限成功";
 "Lock_QUIC_Config_Failed_text" = "锁定文件权限失败";
+"Unlock_QUIC_Config_Failed_text" = "解锁文件权限失败";
 "How_It_Works_text" = "工作原理";
 "Works_Principle_text" = "参考'https://www.feng.com/post/13873305'中的内容，修改'/var/preferences/com.apple.networkd.plist'的参数完成的这个App。\n但是我无法保证开启QUIC后是否有效，是否产生副作用，建议您自行了解工作原理，如果对您的设备造成了影响，我们概不负责。";
 "Not_Supported_text" = "糟糕，没有获取到配置文件，或许您的系统不支持QUIC，所以我们没有办法继续操作";

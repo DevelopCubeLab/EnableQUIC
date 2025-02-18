@@ -3,7 +3,7 @@ import AudioToolbox
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let versionCode = "1.2.1"
+    let versionCode = "1.2.2"
     
     var tableView = UITableView()
     
@@ -16,7 +16,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var sections = [
         [],
         [NSLocalizedString("CFBundleDisplayName", comment: ""), NSLocalizedString("Restore_Default_Settings_text", comment: ""), NSLocalizedString("Reload_QUIC_Config_text", comment: "")],
-        [NSLocalizedString("Version_text", comment: ""), "GitHub", NSLocalizedString("How_It_Works_text", comment: ""), NSLocalizedString("Introduction_QUIC_text", comment: ""), NSLocalizedString("Reference_text", comment: ""), NSLocalizedString("ThanksForXiaoboVlog", comment: "")]
+        [NSLocalizedString("Version_text", comment: ""), "GitHub", NSLocalizedString("How_It_Works_text", comment: ""), NSLocalizedString("Introduction_QUIC_text", comment: ""), NSLocalizedString("Reference_text", comment: ""), NSLocalizedString("ThanksForXiaoboVlog", comment: ""), NSLocalizedString("Reference_text", comment: "")]
     ]
     
     var statusItems: [(String, Bool)] = []
@@ -107,7 +107,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         if section == 0 {
             return statusItems.count
         } else if section == 3 {
-            return statusItems.count + 3
+            return statusItems.count + 4
         } else {
             return sections[section].count
         }
@@ -199,6 +199,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .systemRed
             } else if indexPath.row == (statusItems.count + 2) {
+                cell.textLabel?.text = NSLocalizedString("Unlock_Permissions_text", comment: "")
+                cell.textLabel?.textAlignment = .center
+                cell.textLabel?.textColor = .systemOrange
+            } else if indexPath.row == (statusItems.count + 3) {
                 cell.textLabel?.text = NSLocalizedString("Hide_Advanced_Settings_text", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .systemBlue
@@ -226,6 +230,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // 添加确定按钮
                 let confirmButton = UIAlertAction(title: NSLocalizedString("Confirm_text", comment: ""), style: .default // 按钮样式
                 ) { _ in
+                    
+                    if FileUtils.isFileLocked() { // 检查文件是否被锁定了
+                        self.showAlertDialog(messags: NSLocalizedString("File_Locked_message", comment: ""), showRespringButton: false)
+                        return
+                    }
                     // 按钮回调处理
                     if FileUtils.enableQUIC(statusItems: self.statusItems) {
                         self.showAlertDialog(messags: String.localizedStringWithFormat(NSLocalizedString("Enable_QUIC_Successful_text", comment: ""), FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.path.appending("/backups/") ?? NSLocalizedString("Unknown_text", comment: "")), showRespringButton: true)
@@ -255,6 +264,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // 添加确定按钮
                 let confirmButton = UIAlertAction(title: NSLocalizedString("Confirm_text", comment: ""), style: .default // 按钮样式
                 ) { _ in
+                    if FileUtils.isFileLocked() { // 检查文件是否被锁定了
+                        self.showAlertDialog(messags: NSLocalizedString("File_Locked_message", comment: ""), showRespringButton: false)
+                        return
+                    }
                     // 按钮回调处理
                     if FileUtils.setDefaultQUICConfig(statusItems: self.statusItems) {
                         // 刷新数据和列表
@@ -307,9 +320,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if let url = URL(string: "https://github.com/xiaobovlog") {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
+            } else if indexPath.row == 6 {
+                if let url = URL(string: "https://www.douyin.com/video/7339933821128822051") {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
             }
         }
         if indexPath.section == 3 { // 高级设置
+            tableView.deselectRow(at: indexPath, animated: true)
             if indexPath.row == (statusItems.count) {
                 let alert = UIAlertController(
                     title: NSLocalizedString("Alert_text", comment: ""), // 设置标题
@@ -320,6 +338,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // 添加确定按钮
                 let confirmButton = UIAlertAction(title: NSLocalizedString("Confirm_text", comment: ""), style: .default // 按钮样式
                 ) { _ in
+                    if FileUtils.isFileLocked() { // 检查文件是否被锁定了
+                        self.showAlertDialog(messags: NSLocalizedString("File_Locked_message", comment: ""), showRespringButton: false)
+                        return
+                    }
                     // 按钮回调处理
                     if FileUtils.customerQUICProfile(statusItems: self.statusItems) {
                         // 刷新数据和列表
@@ -338,36 +360,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 DispatchQueue.main.async {
                     self.present(alert, animated: true)
                 }
-            } else if indexPath.row == (statusItems.count + 1) {
-                // 锁定文件权限
-                let alert = UIAlertController(
-                    title: NSLocalizedString("Alert_text", comment: ""), // 设置标题
-                    message: NSLocalizedString("Lock_QUIC_Config_message", comment: ""), // 设置文本提示
-                    preferredStyle: .alert // 弹窗样式
-                )
-                
-                // 添加确定按钮
-                let confirmButton = UIAlertAction(title: NSLocalizedString("Confirm_text", comment: ""), style: .default // 按钮样式
-                ) { _ in
-                    // 按钮回调处理
-                    if FileUtils.setLockProfileAttributes() {
-                        // 刷新数据和列表
-                        self.loadConfigData()
-                        tableView.reloadData()
-                        
-                        self.showAlertDialog(messags: NSLocalizedString("Lock_QUIC_Config_Successful_text", comment: ""), showRespringButton: true)
-                    } else {
-                        self.showAlertDialog(messags: NSLocalizedString("Lock_QUIC_Config_Failed_text", comment: ""), showRespringButton: false)
-                    }
-                }
-                alert.addAction(confirmButton)
-                // 添加取消按钮
-                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel_text", comment: ""), style: .cancel))
-                // 显示弹窗
-                DispatchQueue.main.async {
-                    self.present(alert, animated: true)
-                }
-            } else if indexPath.row == (statusItems.count + 2) {
+            } else if indexPath.row == (statusItems.count + 1) { // 锁定文件权限
+                changeFileLockStatus(lock: true)
+            } else if indexPath.row == (statusItems.count + 2) { // 解锁文件权限
+                changeFileLockStatus(lock: false)
+            } else if indexPath.row == (statusItems.count + 3) {
                 // 隐藏高级设置
                 showAdvancedItems = false
                 clickIconImageTimes = 0
@@ -434,6 +431,53 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             showAdvancedSettingItems()
             // 震动
             AudioServicesPlaySystemSound(1521)
+        }
+    }
+    
+    /// 锁定/解锁配置文件
+    private func changeFileLockStatus(lock: Bool) {
+        
+        var message = NSLocalizedString("Lock_QUIC_Config_message", comment: "")
+        if !lock {
+            message = NSLocalizedString("Unlock_QUIC_Config_message", comment: "")
+        }
+        
+        // 锁定/解锁文件权限
+        let alert = UIAlertController(
+            title: NSLocalizedString("Alert_text", comment: ""), // 设置标题
+            message: message, // 设置文本提示
+            preferredStyle: .alert // 弹窗样式
+        )
+        
+        // 添加确定按钮
+        let confirmButton = UIAlertAction(title: NSLocalizedString("Confirm_text", comment: ""), style: .default // 按钮样式
+        ) { _ in
+            // 按钮回调处理
+            if FileUtils.setLockProfileAttributes(lock: lock) {
+                // 刷新数据和列表
+                self.loadConfigData()
+                self.tableView.reloadData()
+                
+                if lock {
+                    self.showAlertDialog(messags: NSLocalizedString("Lock_QUIC_Config_Successful_text", comment: ""), showRespringButton: false)
+                } else {
+                    self.showAlertDialog(messags: NSLocalizedString("Unlock_QUIC_Config_Successful_text", comment: ""), showRespringButton: false)
+                }
+                
+            } else {
+                if lock {
+                    self.showAlertDialog(messags: NSLocalizedString("Lock_QUIC_Config_Failed_text", comment: ""), showRespringButton: false)
+                } else {
+                    self.showAlertDialog(messags: NSLocalizedString("Unlock_QUIC_Config_Failed_text", comment: ""), showRespringButton: false)
+                }
+            }
+        }
+        alert.addAction(confirmButton)
+        // 添加取消按钮
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel_text", comment: ""), style: .cancel))
+        // 显示弹窗
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
         }
     }
     

@@ -10,6 +10,7 @@
                    group:(NSString *)group;
 
 - (BOOL)moveFileFromPath:(NSString *)fromPath toPath:(NSString *)toPath;
+- (BOOL)setFileLock:(BOOL)lock;
 
 @end
 
