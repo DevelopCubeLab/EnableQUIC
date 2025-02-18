@@ -123,6 +123,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 1 {
             return NSLocalizedString("Warning_message", comment: "")
+        } else if section == 3 {
+            return NSLocalizedString("Advanced_Settings_footer_text", comment: "")
         }
         return nil
     }

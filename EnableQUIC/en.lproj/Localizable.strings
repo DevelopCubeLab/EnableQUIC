@@ -37,6 +37,7 @@
 "Works_Principle_text" = "Based on the content from 'https://www.feng.com/post/13873305'(Chinese), this app modifies the parameters in '/var/preferences/com.apple.networkd.plist'.\nHowever, I cannot guarantee the effectiveness or lack of side effects after enabling QUIC. You are advised to understand how it works yourself. We are not responsible for any impact on your device.";
 "Not_Supported_text" = "Oops, the configuration file was not retrieved. Your system might not support QUIC, so we cannot proceed.";
 "Warning_message" = "The impact of enabling QUIC on the system cannot be determined. Please understand how QUIC works on your own.";
+"Advanced_Settings_footer_text" = "Advanced settings may pose risks, please understand the principles before operating.";
 "Reload_QUIC_Config_text" = "Reload QUIC config";
 "ThanksForXiaoboVlog" = "Special thanks to Xiaobovlog\nProviding ideas for RootHelper";
 "ThanksForFengQingWanZhong" = "Special thanks to FengQingWanZhong";

@@ -37,6 +37,7 @@
 "Works_Principle_text" = "参考'https://www.feng.com/post/13873305'中的内容，修改'/var/preferences/com.apple.networkd.plist'的参数完成的这个App。\n但是我无法保证开启QUIC后是否有效，是否产生副作用，建议您自行了解工作原理，如果对您的设备造成了影响，我们概不负责。";
 "Not_Supported_text" = "糟糕，没有获取到配置文件，或许您的系统不支持QUIC，所以我们没有办法继续操作";
 "Warning_message" = "无法确定开启QUIC后对系统的影响，请自行了解QUIC的工作原理。";
+"Advanced_Settings_footer_text" = "高级设置可能存在风险，请自行了解原理后再进行操作";
 "Reload_QUIC_Config_text" = "重新加载QUIC配置文件";
 "ThanksForXiaoboVlog" = "特别感谢肖博vlog\n提供RootHelper制作思路";
 "ThanksForFengQingWanZhong" = "特别感谢锋情万种";
