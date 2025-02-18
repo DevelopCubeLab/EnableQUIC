@@ -39,3 +39,8 @@
 "Warning_message" = "无法确定开启QUIC后对系统的影响，请自行了解QUIC的工作原理。";
 "Reload_QUIC_Config_text" = "重新加载QUIC配置文件";
 "ThanksForXiaoboVlog" = "特别感谢肖博vlog\n提供RootHelper制作思路";
+"ThanksForFengQingWanZhong" = "特别感谢锋情万种";
+"Config_Permissions_text" = "配置文件权限";
+"Locked_text" = "已锁定";
+"Unlocked_text" = "未锁定";
+"No_Permission_Access_text" = "无权限访问";

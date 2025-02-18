@@ -3,7 +3,7 @@ import AudioToolbox
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let versionCode = "1.2.2"
+    let versionCode = "1.2.3"
     
     var tableView = UITableView()
     
@@ -16,7 +16,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     var sections = [
         [],
         [NSLocalizedString("CFBundleDisplayName", comment: ""), NSLocalizedString("Restore_Default_Settings_text", comment: ""), NSLocalizedString("Reload_QUIC_Config_text", comment: "")],
-        [NSLocalizedString("Version_text", comment: ""), "GitHub", NSLocalizedString("How_It_Works_text", comment: ""), NSLocalizedString("Introduction_QUIC_text", comment: ""), NSLocalizedString("Reference_text", comment: ""), NSLocalizedString("ThanksForXiaoboVlog", comment: ""), NSLocalizedString("Reference_text", comment: "")]
+        [NSLocalizedString("Version_text", comment: ""), "GitHub", NSLocalizedString("How_It_Works_text", comment: ""), NSLocalizedString("Introduction_QUIC_text", comment: ""), NSLocalizedString("Reference_text", comment: ""), NSLocalizedString("ThanksForXiaoboVlog", comment: ""), NSLocalizedString("ThanksForFengQingWanZhong", comment: "")]
     ]
     
     var statusItems: [(String, Bool)] = []
@@ -107,7 +107,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         if section == 0 {
             return statusItems.count
         } else if section == 3 {
-            return statusItems.count + 4
+            return statusItems.count + 5
         } else {
             return sections[section].count
         }
@@ -140,6 +140,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.accessoryType = .none
 //        cell.selectionStyle = .none
         cell.isUserInteractionEnabled = true
+        cell.textLabel?.numberOfLines = 0 // 允许换行
         
         if indexPath.section == 0 { //状态
             cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
@@ -164,6 +165,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         } else if indexPath.section == 2 {
             cell.textLabel?.text = sections[indexPath.section][indexPath.row]
+            cell.textLabel?.textAlignment = .left
             if indexPath.row == 0 {
                 cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
                 cell.textLabel?.text = sections[indexPath.section][indexPath.row]
@@ -194,15 +196,24 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cell.textLabel?.text = NSLocalizedString("Save_text", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .systemBlue
-            } else if indexPath.row == (statusItems.count + 1) {
+            } else if indexPath.row == (statusItems.count + 1) { // 设置文件的锁定权限
+                cell = UITableViewCell(style: .value1, reuseIdentifier: "cell")
+                cell.selectionStyle = .none // 禁止点击特效
+                cell.textLabel?.text = NSLocalizedString("Config_Permissions_text", comment: "")
+                if hasRootPermission {
+                    cell.detailTextLabel?.text = FileUtils.isFileLocked() ? NSLocalizedString("Locked_text", comment: "") : NSLocalizedString("Unlocked_text", comment: "")
+                } else {
+                    cell.detailTextLabel?.text = NSLocalizedString("No_Permission_Access_text", comment: "")
+                }
+            } else if indexPath.row == (statusItems.count + 2) {
                 cell.textLabel?.text = NSLocalizedString("Lock_Permissions_text", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .systemRed
-            } else if indexPath.row == (statusItems.count + 2) {
+            } else if indexPath.row == (statusItems.count + 3) {
                 cell.textLabel?.text = NSLocalizedString("Unlock_Permissions_text", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .systemOrange
-            } else if indexPath.row == (statusItems.count + 3) {
+            } else if indexPath.row == (statusItems.count + 4) {
                 cell.textLabel?.text = NSLocalizedString("Hide_Advanced_Settings_text", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.textLabel?.textColor = .systemBlue
@@ -360,12 +371,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 DispatchQueue.main.async {
                     self.present(alert, animated: true)
                 }
-            } else if indexPath.row == (statusItems.count + 1) { // 锁定文件权限
+            } else if indexPath.row == (statusItems.count + 2) { // 锁定文件权限
                 changeFileLockStatus(lock: true)
-            } else if indexPath.row == (statusItems.count + 2) { // 解锁文件权限
+            } else if indexPath.row == (statusItems.count + 3) { // 解锁文件权限
                 changeFileLockStatus(lock: false)
-            } else if indexPath.row == (statusItems.count + 3) {
-                // 隐藏高级设置
+            } else if indexPath.row == (statusItems.count + 4) { // 隐藏高级设置
                 showAdvancedItems = false
                 clickIconImageTimes = 0
                 // 删除数据集

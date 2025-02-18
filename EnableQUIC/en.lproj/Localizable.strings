@@ -39,3 +39,8 @@
 "Warning_message" = "The impact of enabling QUIC on the system cannot be determined. Please understand how QUIC works on your own.";
 "Reload_QUIC_Config_text" = "Reload QUIC config";
 "ThanksForXiaoboVlog" = "Special thanks to Xiaobovlog\nProviding ideas for RootHelper";
+"ThanksForFengQingWanZhong" = "Special thanks to FengQingWanZhong";
+"Config_Permissions_text" = "Config file permissions";
+"Locked_text" = "Locked";
+"Unlocked_text" = "Unlocked";
+"No_Permission_Access_text" = "No permission to access";
