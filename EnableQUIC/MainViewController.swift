@@ -3,7 +3,7 @@ import AudioToolbox
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let versionCode = "1.2"
+    let versionCode = "1.2.1"
     
     var tableView = UITableView()
     

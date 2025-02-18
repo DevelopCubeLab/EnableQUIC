@@ -41,13 +41,13 @@ class FileUtils {
         // 默认配置
         var defaultConfigItems: [(String, Bool)] = []
         
-        if #available(iOS 16.0, *) {
+        if #available(iOS 15.0, *) { // iOS 15和iOS 16是一样的配置
             defaultConfigItems = [
                 ("enable_quic", true),
                 ("disable_quic_race", false),
                 ("disable_quic_race5", false)
             ]
-        } else {
+        } else { // iOS 14的配置
             defaultConfigItems = [
                 ("disable_quic_race", false),
             ]
