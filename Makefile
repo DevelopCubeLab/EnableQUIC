@@ -4,7 +4,7 @@ TARGET := iphone:clang:latest:12.2
 include $(THEOS)/makefiles/common.mk
 
 XCODEPROJ_NAME = EnableQUIC
-VersionCode = "1.2.3"
+VersionCode = "1.2.4"
 
 include $(THEOS_MAKE_PATH)/xcodeproj.mk
 

@@ -10,8 +10,11 @@ class FileUtils {
     }
     
     static func getNetworkdConfigStatus() -> [(String, Bool)] {
-        // 文件路径
-        let filePath = "/var/preferences/com.apple.networkd.plist"
+        return getNetworkdConfigStatus(filePath: "/var/preferences/com.apple.networkd.plist")
+    }
+    
+    static func getNetworkdConfigStatus(filePath: String) -> [(String, Bool)] {
+        
         guard let plistDict = NSDictionary(contentsOfFile: filePath) as? [String: Any] else {
             return [] // 如果文件不存在或格式错误，返回空数组
         }
@@ -62,22 +65,31 @@ class FileUtils {
         // 默认配置
         var defaultConfigItems: [(String, Bool)] = []
         
-        if #available(iOS 16.0, *) { // iOS 16和iOS 17.0 默认的配置
-            defaultConfigItems = [
-                ("enable_quic", true),
-                ("disable_quic_race", true),
-                ("disable_quic_race5", true)
-            ]
-        } else if #available(iOS 15.0, *) { // iOS 15 默认的配置
-            defaultConfigItems = [
-                ("enable_quic", false),
-                ("disable_quic_race", true),
-                ("disable_quic_race5", true)
-            ]
-        } else { // iOS 14的默认设置，理论上iOS 14是不支持的
-            defaultConfigItems = [
-                ("disable_quic_race", true),
-            ]
+        // 备份目录
+        let backupFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("backups").appendingPathComponent("com.apple.networkd.plist")
+        
+        if FileManager.default.fileExists(atPath: backupFilePath.path) { // 如果备份文件存在，则先从备份中读取默认设置
+            defaultConfigItems = getNetworkdConfigStatus(filePath: backupFilePath.path)
+        }
+        
+        if defaultConfigItems.isEmpty { // 如果备份是空的或者没有备份，则直接提供默认设置
+            if #available(iOS 15.5, *) { // iOS 15.5 ~ iOS 17.0 默认的配置
+                defaultConfigItems = [
+                    ("enable_quic", true),
+                    ("disable_quic_race", true),
+                    ("disable_quic_race5", true)
+                ]
+            } else if #available(iOS 15.0, *) { // iOS 15.0 ~ 15.4.1 默认的配置
+                defaultConfigItems = [
+                    ("enable_quic", false),
+                    ("disable_quic_race", true),
+                    ("disable_quic_race5", true)
+                ]
+            } else { // iOS 14的默认设置，理论上iOS 14是不支持的
+                defaultConfigItems = [
+                    ("disable_quic_race", true),
+                ]
+            }
         }
         
         // 调用 editQUICProfile 传递系统支持的配置项和默认配置

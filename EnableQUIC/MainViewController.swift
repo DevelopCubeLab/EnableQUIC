@@ -3,7 +3,7 @@ import AudioToolbox
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let versionCode = "1.2.3"
+    let versionCode = "1.2.4"
     
     var tableView = UITableView()
     
@@ -152,7 +152,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.accessoryType = .none
         } else if indexPath.section == 1 {
             cell.textLabel?.text = sections[indexPath.section][indexPath.row]
-            if !hasRootPermission { // 处理无权限的问题
+            if !hasRootPermission || statusItems.isEmpty { // 处理无权限的问题
                 cell.textLabel?.textColor = .lightGray //文本变成灰色
                 cell.selectionStyle = .none
             } else {
